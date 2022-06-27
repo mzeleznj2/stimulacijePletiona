@@ -1,0 +1,119 @@
+﻿@model Stimulacije_2022.StimulacijaPL
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_myLayout.cshtml";
+}
+
+
+
+@using (Html.BeginForm("Edit", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal" style="margin:20px;">
+        <h4>Ažuriraj</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.idStimulacije)
+
+        <div class="form-group">
+            <div class="col-md-10">
+                Mjesec:  @Html.EditorFor(model => model.mjesec, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })               
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                Godina: @Html.EditorFor(model => model.godina, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })              
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                Operator:   @Html.EditorFor(model => model.@operator, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })               
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                Ime:   @Html.EditorFor(model => model.ime, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })                
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                Prezime:   @Html.EditorFor(model => model.prezime, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })                
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                Efikasnost:   @Html.EditorFor(model => model.Efikasnost, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Efikasnost, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                Efikasnost prema normi:   @Html.EditorFor(model => model.EfPremaNormi, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.EfPremaNormi, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                Norma:   @Html.EditorFor(model => model.Norma, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Norma, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                Postotak Destimulacije:   @Html.EditorFor(model => model.PostotakDestim, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.PostotakDestim, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                Stimulacija:   @Html.EditorFor(model => model.Stimulacija, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Stimulacija, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                Ukupno:   @Html.EditorFor(model => model.Ukupno, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Ukupno, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                Status:   @Html.EditorFor(model => model.status, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.status, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <br />
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Spremi" class="btn btn-primary" />
+            </div>
+            <br />
+            <div>
+                @Html.ActionLink("Povratak", "StimulacijeZaObradu")
+            </div>
+        </div>
+    </div>
+}
+
+
+@*<div>
+    @Html.ActionLink("Povratak", "StimulacijeZaObradu")
+</div>*@
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
