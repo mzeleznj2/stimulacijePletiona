@@ -182,6 +182,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model1.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Bolovanja.cs" />
     <Compile Include="Models\ListToDataTable.cs" />
     <Compile Include="Models\Stimulacije.cs" />
     <Compile Include="Models\Zdruzeno.cs" />
@@ -286,6 +287,8 @@
     <Content Include="Views\Home\StimulacijeZaObradu.cshtml" />
     <Content Include="Views\Shared\_StimulacijePartial.cshtml" />
     <Content Include="Views\Home\Edit.cshtml" />
+    <Content Include="Views\Home\TraziBolovanja.cshtml" />
+    <Content Include="Views\Home\PartialViewDestimulacije.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

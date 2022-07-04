@@ -1,4 +1,5 @@
-﻿using Stimulacije_2022.Models;
+﻿using Newtonsoft.Json;
+using Stimulacije_2022.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -21,19 +22,12 @@ namespace Stimulacije_2022.Controllers
         public ActionResult Stimulacije()
         {
             if (Session["User"] != null)
-            {
-                //List<Zdruzeno> listaPodataka = new List<Zdruzeno>();
-                              
-
+            {                                          
                 Stimulacije podaci = new Stimulacije();
-                //podaci = null;
-                
-                //listaPodataka = podaci.vratiPodatke();
 
                 ViewBag.Stimulacije = podaci.vratiPodatke();
 
-                return View("Stimulacije");
-                
+                return View("Stimulacije");                
             }
             else
             {
@@ -70,13 +64,18 @@ namespace Stimulacije_2022.Controllers
 
             return RedirectToAction("Index");
         }
-
-       
+               
 
         public ActionResult StimulacijeZaObradu()
-        {          
-            
-            return View(context.StimulacijaPL.ToList());
+        {
+            if (Session["User"] != null)
+            {
+                return View(context.StimulacijaPL.ToList());
+            }
+            else 
+            {
+                return RedirectToAction("Login");
+            }
         }
 
         public ActionResult PotvrdiStimulacije()
@@ -119,16 +118,22 @@ namespace Stimulacije_2022.Controllers
             {
                 TempData["poruka"] = "Stimulacije nisu još kopirane za obradu.";
             }
-
             
             return RedirectToAction("StimulacijeZaObradu");
         }
        
         public ActionResult Edit(int operator1, int godina, int mjesec)
         {
-            var data = context.StimulacijaPL.Where(x => (x.@operator == operator1) && (x.godina == godina) && (x.mjesec == mjesec)).FirstOrDefault();
+            if (Session["User"] != null)
+            {
+                var data = context.StimulacijaPL.Where(x => (x.@operator == operator1) && (x.godina == godina) && (x.mjesec == mjesec)).FirstOrDefault();
 
-            return View(data);
+                return View(data);
+            }
+            else
+            {
+                return RedirectToAction("Login");
+            }
         }
 
         [HttpPost]
@@ -162,6 +167,64 @@ namespace Stimulacije_2022.Controllers
            
         }
 
+        public ActionResult TraziBolovanja()
+        {
+            if (Session["User"] != null)
+            {
+                ViewData["test"] = 0;
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Login");
+            }
+            
+        }
+
+
+
+        public ActionResult GetData(string matBr)
+        {
+            
+            if (matBr != "")
+            {
+                TempData["matbr"] = matBr;
+                return RedirectToAction("PartialViewDestimulacije");
+            }
+            else
+            {
+                TempData["greska"] = "Niste dobro upisali matične brojeve!";
+                return RedirectToAction("TraziBolovanja");
+            }         
+           
+        }
+
+
+
+        [HttpGet]
+        public ActionResult PartialViewDestimulacije()
+        {
+            if (Session["User"] != null)
+            {
+                Stimulacije bol = new Stimulacije();
+                string tekst = TempData["matbr"].ToString();
+
+                List<Bolovanja> bolovanjaLista = bol.vratiListuBolovanja(tekst);
+                //return Json(new { data = bolovanjaLista }, JsonRequestBehavior.AllowGet);
+
+                ViewData["test"] = 1;
+
+                return View("TraziBolovanja", bolovanjaLista);
+            }
+            else
+            {
+                return RedirectToAction("Login");
+            }
+              
+        }
+
+
 
         public ActionResult Logout()
         {
@@ -170,8 +233,6 @@ namespace Stimulacije_2022.Controllers
 
             return RedirectToAction("Login");
         }
-
-
 
         
 

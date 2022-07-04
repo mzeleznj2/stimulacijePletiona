@@ -1,0 +1,82 @@
+﻿@model IEnumerable<Stimulacije_2022.Models.Bolovanja>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <script src="~/scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var table = $('#myTable').DataTable({
+                /*dom: 'Bfrtip',*/
+                //buttons: [
+                //    "excel",
+                //    "pdf"
+                //]
+                //buttons: [
+                //    'excelHtml5',
+                //    'pdfHtml5'
+                //],
+            });
+        });
+
+    </script>
+
+    <style>
+        #tablica {
+            width: 50%;
+            margin-left: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <table id="tablica" class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <td>
+                    Matični broj
+                </td>
+                <td>
+                    Ime
+                </td>
+                <td>
+                    Prezime
+                </td>
+                <td>
+                    Postotak destimulacije
+                </td>
+            </tr>
+        </thead>
+
+        @foreach (var item in Model)
+        {
+            <tbody>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BADGE)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.prezime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PostoDestim)
+                    </td>
+                </tr>
+            </tbody>
+        }
+
+    </table>
+</body>
+</html>

@@ -29,10 +29,40 @@
     <style>
         .table {
             margin: 20px;
+            
         }
 
         h3 {
             margin: 15px;
+
+        }
+        .jedan {
+            background-color: white;
+            color: black;
+            margin: 5px;
+            border: 1px solid black;
+        }
+        .dva {
+            background-color: crimson;
+            color: white;
+            margin: 5px;
+            border: 1px solid black;
+        }
+        .tri {
+            background-color: gold;
+            color: black;
+            margin: 5px;
+            border: 1px solid black;
+        }
+        .devet {
+            background-color: grey;
+            color: white;
+            margin: 5px;
+            border: 1px solid black;
+        }
+        #status {
+            float: right;
+            margin-bottom: 15px;
         }
     </style>
     
@@ -72,11 +102,13 @@
     }
 
 
-    <button id="KopirajPodatke" class="btn btn-danger" onclick="location.href='@Url.Action("PotvrdiStimulacije", "Home")'">
+    @*<button id="KopirajPodatke" class="btn btn-danger" onclick="location.href='@Url.Action("PotvrdiStimulacije", "Home")'">
         <i class="fa fa-copy"></i> Potvrdi stimulacije za obradu
-    </button>
+    </button>*@
 
-    <br />
+    <div id="status">
+        Status: <span class="jedan"> "1" = Kopirano </span> <span class="dva"> "2" = Potvrđeno za prebacivanje </span><span class="tri"> "3"= Prebačano u plaću </span><span class="devet">  "9" = Preskače se iz obrada </span>
+    </div>
     <br />
 
 
@@ -127,62 +159,87 @@
 
         @foreach (var item in Model)
         {
-            <tr>
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.mjesec)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.godina)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.@operator)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.prezime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Efikasnost)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EfPremaNormi)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Norma)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PostotakDestim)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Stimulacija)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Ukupno)
+        </td>
+        @{            
+            if (item.status == "1")
+            {
                 <td>
-                    @Html.DisplayFor(modelItem => item.mjesec)
+                     <button class="jedan" disabled>@Html.DisplayFor(modelItem => item.status) </button>
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.godina)
+            }
+            else if (item.status == "2")
+            {
+                <td >
+                    <button class="dva" disabled>@Html.DisplayFor(modelItem => item.status) </button>
                 </td>
+            }
+            else if (item.status == "3")
+            {
                 <td>
-                    @Html.DisplayFor(modelItem => item.@operator)
+                    <button class="tri" disabled> @Html.DisplayFor(modelItem => item.status)  </button>
                 </td>
+            }
+            else
+            {
                 <td>
-                    @Html.DisplayFor(modelItem => item.ime)
+                    <button class="devet" disabled> @Html.DisplayFor(modelItem => item.status)  </button>
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.prezime)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Efikasnost)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EfPremaNormi)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Norma)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PostotakDestim)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Stimulacija)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Ukupno)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.status)
-                </td>
-                <td>
+            }
 
-                    @*@Html.ActionLink("Edit", "Edit", new { operator1 = item.@operator, godina = item.godina, mjesec = item.mjesec }, new { @class = "btn btn-success" })*@
-                    @*<a href="@Url.Action("Edit", "Home", new { operator1 = item.@operator, godina = item.godina, mjesec = item.mjesec })" class="btn btn-success">
-                        <i class="bi bi-pencil-square"></i>  Ažuriraj
-                    </a>*@
+        }
+        @*<td>
+            <span class= ""> @Html.DisplayFor(modelItem => item.status) </span>
+        </td>*@
+        <td>
+
+            @*@Html.ActionLink("Edit", "Edit", new { operator1 = item.@operator, godina = item.godina, mjesec = item.mjesec }, new { @class = "btn btn-success" })*@
+            @*<a href="@Url.Action("Edit", "Home", new { operator1 = item.@operator, godina = item.godina, mjesec = item.mjesec })" class="btn btn-success">
+                <i class="bi bi-pencil-square"></i>  Ažuriraj
+            </a>*@
 
 
-                    <button class="btn btn-warning" onclick="location.href='@Url.Action("Edit", "Home", new { operator1 = item.@operator, godina = item.godina, mjesec = item.mjesec })'">
-                        <i class="fa fa-pencil-square"></i> Ažuriraj
-                    </button>
-                </td>
-            </tr>
+            <button class="btn btn-warning" onclick="location.href='@Url.Action("Edit", "Home", new { operator1 = item.@operator, godina = item.godina, mjesec = item.mjesec })'">
+                <i class="fa fa-pencil-square"></i> Ažuriraj
+            </button>
+        </td>
+    </tr>
 
         }
 
     </table>
-
- 
 
 
 
@@ -190,15 +247,16 @@
     <script>
         $(document).ready(function () {
             var table = $('#table').DataTable({
-                dom: 'Bfrtip',
+                
+                /*dom: 'Bfrtip',*/
                 //buttons: [
                 //    "excel",
                 //    "pdf"
                 //]
-                buttons: [
-                    'excelHtml5',
-                    'pdfHtml5'
-                ],
+                //buttons: [
+                //    'excelHtml5',
+                //    'pdfHtml5'
+                //],
             });
 
 

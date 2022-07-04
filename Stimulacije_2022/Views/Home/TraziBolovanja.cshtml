@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_myLayout.cshtml";
+}
+
+
+<script src="~/scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+
+
+
+<style>
+    #pretrazivanje {
+        margin: 50px;
+    }
+</style>
+
+
+
+<form class="form-inline" id="pretrazivanje" method="get" action="GetData">
+    <div class="form-group">
+        <label for="matBr">Unesi matične brojeve odvojene zarezom (npr. 12,150,304):</label>
+        @*<input type="text" id="matBr">*@
+
+        <input type="text" id="matBr" name="matBr" required>
+
+
+        <input type="submit" id="btnTrazi" value="Traži" class="btn btn-secondary">
+
+    </div>
+</form>
+
+
+<div>
+    @{
+        if (Convert.ToInt32(ViewData["test"]) == 0)
+        {
+            <p></p>
+        }
+        else if (Convert.ToInt32(ViewData["test"]) == 1)
+        {
+            Html.RenderPartial("PartialViewDestimulacije");
+        }
+        else
+        {
+
+        }
+
+    }
+</div>
+
+
