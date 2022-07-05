@@ -11,53 +11,22 @@ namespace Stimulacije_2022
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
+    
     public partial class StimulacijaPL
     {
-
         public int idStimulacije { get; set; }
-
-
-        [Display(Name = "Mjesec")]
         public Nullable<int> mjesec { get; set; }
-        
-        [Display(Name = "Godina")]
         public Nullable<int> godina { get; set; }
-
-        [Display(Name = "Operator")]
         public Nullable<int> @operator { get; set; }
-
-        [Display(Name = "Ime")]
         public string ime { get; set; }
-
-        [Display(Name = "Prezime")]
         public string prezime { get; set; }
-
-        [Required(ErrorMessage = "Efikasnost ne može biti bez vrijednosti!")]
         public Nullable<double> Efikasnost { get; set; }
-
-        [Required(ErrorMessage = "Efikasnost prema normi ne može biti bez vrijednosti!")]
-        [Display(Name = "Efikasnost prema Normi")]
         public Nullable<double> EfPremaNormi { get; set; }
-
-        [Required(ErrorMessage = "Norma ne može biti bez vrijednosti!")]
         public Nullable<double> Norma { get; set; }
-
-        [Required(ErrorMessage = "Postotak destimulacije ne može biti bez vrijednosti!")]
-
-        [Display(Name = "Postotak destimulacije")]
         public Nullable<int> PostotakDestim { get; set; }
-
-        [Required(ErrorMessage = "Stimulacija ne može biti bez vrijednosti!")]
         public Nullable<int> Stimulacija { get; set; }
-
-        [Required(ErrorMessage = "Polje ukupno ne može biti bez vrijednosti!")]
         public Nullable<int> Ukupno { get; set; }
-
-        [Required(ErrorMessage = "Status ne može biti bez vrijednosti!")]
-        [Display(Name = "Status")]
-        [RegularExpression("[1,2,3,9]", ErrorMessage = "Status može biti 1,2,3, ili 9!")]
         public string status { get; set; }
+        public Nullable<System.DateTime> DatumPrebacivanja { get; set; }
     }
 }
