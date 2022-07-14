@@ -5,6 +5,16 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="dbNautilusModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="OPERATORS">
+          <Key>
+            <PropertyRef Name="idRec" />
+          </Key>
+          <Property Name="OpCode" Type="int" />
+          <Property Name="FirstName" Type="char" MaxLength="30" />
+          <Property Name="LastName" Type="char" MaxLength="30" />
+          <Property Name="RespoCode" Type="char" MaxLength="30" />
+          <Property Name="idRec" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
         <EntityType Name="StimulacijaLOGIN">
           <Key>
             <PropertyRef Name="idLogin" />
@@ -35,6 +45,7 @@
           <Property Name="DatumPrebacivanja" Type="date" />
         </EntityType>
         <EntityContainer Name="dbNautilusModelStoreContainer">
+          <EntitySet Name="OPERATORS" EntityType="Self.OPERATORS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StimulacijaLOGIN" EntityType="Self.StimulacijaLOGIN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StimulacijaPL" EntityType="Self.StimulacijaPL" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
@@ -74,7 +85,18 @@
         <EntityContainer Name="dbNautilusEntities4" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="StimulacijaLOGIN" EntityType="Self.StimulacijaLOGIN" />
           <EntitySet Name="StimulacijaPL" EntityType="Self.StimulacijaPL" />
+          <EntitySet Name="OPERATORS" EntityType="dbNautilusModel.OPERATORS" />
         </EntityContainer>
+        <EntityType Name="OPERATORS">
+          <Key>
+            <PropertyRef Name="idRec" />
+          </Key>
+          <Property Name="OpCode" Type="Int32" />
+          <Property Name="FirstName" Type="String" MaxLength="30" FixedLength="true" Unicode="false" />
+          <Property Name="LastName" Type="String" MaxLength="30" FixedLength="true" Unicode="false" />
+          <Property Name="RespoCode" Type="String" MaxLength="30" FixedLength="true" Unicode="false" />
+          <Property Name="idRec" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -109,6 +131,17 @@
                 <ScalarProperty Name="Stimulacija" ColumnName="Stimulacija" />
                 <ScalarProperty Name="Ukupno" ColumnName="Ukupno" />
                 <ScalarProperty Name="status" ColumnName="status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OPERATORS">
+            <EntityTypeMapping TypeName="dbNautilusModel.OPERATORS">
+              <MappingFragment StoreEntitySet="OPERATORS">
+                <ScalarProperty Name="idRec" ColumnName="idRec" />
+                <ScalarProperty Name="RespoCode" ColumnName="RespoCode" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="OpCode" ColumnName="OpCode" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

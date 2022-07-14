@@ -27,5 +27,6 @@ namespace Stimulacije_2022
     
         public DbSet<StimulacijaLOGIN> StimulacijaLOGIN { get; set; }
         public DbSet<StimulacijaPL> StimulacijaPL { get; set; }
+        public DbSet<OPERATORS> OPERATORS { get; set; }
     }
 }

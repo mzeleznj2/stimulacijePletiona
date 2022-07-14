@@ -1,71 +1,128 @@
 ﻿@model IEnumerable<Stimulacije_2022.StimulacijaPL>
 
 
-
-
-
 <!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
 
-    <script src="~/scripts/jquery-3.4.1.js"></script>
-    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
-    <script src="~/Scripts/bootstrap.min.js"></script>
+    @*<script src="~/scripts/jquery-3.4.1.js"></script>
+        <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+        <script src="~/Scripts/bootstrap.min.js"></script>
 
 
-    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css" />
+
+
+        <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>*@
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css" />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 
 
     <style>
         .table {
             margin: 20px;
-            
         }
 
         h3 {
             margin: 15px;
-
         }
+
         .jedan {
             background-color: white;
             color: black;
             margin: 5px;
             border: 1px solid black;
         }
+
         .dva {
             background-color: crimson;
             color: white;
             margin: 5px;
             border: 1px solid black;
         }
+
         .tri {
             background-color: gold;
             color: black;
             margin: 5px;
             border: 1px solid black;
         }
+
         .devet {
             background-color: grey;
             color: white;
             margin: 5px;
             border: 1px solid black;
         }
+
         #status {
             float: right;
             margin-bottom: 15px;
         }
+
+        #spnMsg {
+            margin-top: 5px;
+        }
+
+
     </style>
-    
+
+
+    <script type="text/javascript">
+        function ProvjeriCodice() {
+
+            var kod = document.getElementById("codice").value;
+            console.log(kod);
+            var operator = {};
+            operator.codice = kod;
+            operator.prezIme = "";
+
+
+            $.ajax({
+                type: "GET",
+                url: '/Home/ProvjeriKod',            
+                data: {"kod" : kod},
+                contentType: "application/json; charset=utf-8",        
+                success: function (response) {
+                    if (response.success) {
+                        $('#exampleModal').modal('hide');                        
+                        location.href = response.url;
+                    }
+                    else {
+                        /*console.log("ne postoji operator!");*/
+                        $("#spnMsg").html(response.error);
+                        $("#spnMsg").addClass("alert alert-danger");
+                        //$("#btnRegister").prop('disabled', true);
+                    }
+                }
+            });
+
+
+        }
+    </script>
 
 </head>
 
@@ -102,12 +159,43 @@
     }
 
 
-    @*<button id="KopirajPodatke" class="btn btn-danger" onclick="location.href='@Url.Action("PotvrdiStimulacije", "Home")'">
-        <i class="fa fa-copy"></i> Potvrdi stimulacije za obradu
-    </button>*@
+    <button id="dodajStimulaciju" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">
+        <i class="fa fa-user-plus"></i> Dodaj ručnu stimulaciju
+    </button>
+
+    <br />
+
+    @*MODAL*@
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">Upis operatora</h4>                    
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">                        
+                        <input type="number" class="form-control" id="codice">                        
+                    </div> 
+                    <div class="form-group">
+                        <span id="spnMsg"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-info" onclick="ProvjeriCodice();">Dodavanje stimulacije</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    @*MODAL*@
+
 
     <div id="status">
-        Status: <span class="jedan"> "1" = Kopirano </span> <span class="dva"> "2" = Potvrđeno za prebacivanje </span><span class="tri"> "3"= Prebačano u plaću </span><span class="devet">  "9" = Preskače se iz obrada </span>
+        Status: <span class="jedan"> "1" = Kopirano </span> <span class="dva"> "2" = Potvrđeno za prebacivanje </span><span class="tri"> "3"= Prebačeno u plaću </span><span class="devet">  "9" = Preskače se iz obrada </span>
     </div>
     <br />
 
@@ -159,83 +247,83 @@
 
         @foreach (var item in Model)
         {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.mjesec)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.godina)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.@operator)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ime)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.prezime)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Efikasnost)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.EfPremaNormi)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Norma)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PostotakDestim)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Stimulacija)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Ukupno)
-        </td>
-        @{            
-            if (item.status == "1")
-            {
+            <tr>
                 <td>
-                     <button class="jedan" disabled>@Html.DisplayFor(modelItem => item.status) </button>
+                    @Html.DisplayFor(modelItem => item.mjesec)
                 </td>
-            }
-            else if (item.status == "2")
-            {
-                <td >
-                    <button class="dva" disabled>@Html.DisplayFor(modelItem => item.status) </button>
-                </td>
-            }
-            else if (item.status == "3")
-            {
                 <td>
-                    <button class="tri" disabled> @Html.DisplayFor(modelItem => item.status)  </button>
+                    @Html.DisplayFor(modelItem => item.godina)
                 </td>
-            }
-            else
-            {
                 <td>
-                    <button class="devet" disabled> @Html.DisplayFor(modelItem => item.status)  </button>
+                    @Html.DisplayFor(modelItem => item.@operator)
                 </td>
-            }
+                <td>
+                    @Html.DisplayFor(modelItem => item.ime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.prezime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Efikasnost)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EfPremaNormi)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Norma)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PostotakDestim)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Stimulacija)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ukupno)
+                </td>
+                @{
+                    if (item.status == "1")
+                    {
+                        <td>
+                            <button class="jedan" disabled>@Html.DisplayFor(modelItem => item.status) </button>
+                        </td>
+                    }
+                    else if (item.status == "2")
+                    {
+                        <td>
+                            <button class="dva" disabled>@Html.DisplayFor(modelItem => item.status) </button>
+                        </td>
+                    }
+                    else if (item.status == "3")
+                    {
+                        <td>
+                            <button class="tri" disabled> @Html.DisplayFor(modelItem => item.status)  </button>
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            <button class="devet" disabled> @Html.DisplayFor(modelItem => item.status)  </button>
+                        </td>
+                    }
 
-        }
-        @*<td>
-            <span class= ""> @Html.DisplayFor(modelItem => item.status) </span>
-        </td>*@
-        <td>
+                }
+                @*<td>
+                        <span class= ""> @Html.DisplayFor(modelItem => item.status) </span>
+                    </td>*@
+                <td>
 
-            @*@Html.ActionLink("Edit", "Edit", new { operator1 = item.@operator, godina = item.godina, mjesec = item.mjesec }, new { @class = "btn btn-success" })*@
-            @*<a href="@Url.Action("Edit", "Home", new { operator1 = item.@operator, godina = item.godina, mjesec = item.mjesec })" class="btn btn-success">
-                <i class="bi bi-pencil-square"></i>  Ažuriraj
-            </a>*@
+                    @*@Html.ActionLink("Edit", "Edit", new { operator1 = item.@operator, godina = item.godina, mjesec = item.mjesec }, new { @class = "btn btn-success" })*@
+                    @*<a href="@Url.Action("Edit", "Home", new { operator1 = item.@operator, godina = item.godina, mjesec = item.mjesec })" class="btn btn-success">
+                            <i class="bi bi-pencil-square"></i>  Ažuriraj
+                        </a>*@
 
 
-            <button class="btn btn-warning" onclick="location.href='@Url.Action("Edit", "Home", new { operator1 = item.@operator, godina = item.godina, mjesec = item.mjesec })'">
-                <i class="fa fa-pencil-square"></i> Ažuriraj
-            </button>
-        </td>
-    </tr>
+                    <button class="btn btn-warning" onclick="location.href='@Url.Action("Edit", "Home", new { operator1 = item.@operator, godina = item.godina, mjesec = item.mjesec })'">
+                        <i class="fa fa-pencil-square"></i> Ažuriraj
+                    </button>
+                </td>
+            </tr>
 
         }
 
@@ -247,7 +335,7 @@
     <script>
         $(document).ready(function () {
             var table = $('#table').DataTable({
-                
+
                 /*dom: 'Bfrtip',*/
                 //buttons: [
                 //    "excel",

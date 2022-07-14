@@ -225,6 +225,59 @@ namespace Stimulacije_2022.Controllers
         }
 
 
+        public ActionResult DodajStimulaciju()
+        {
+            return View();
+        }
+
+
+    
+        public ActionResult ProvjeriKod(int kod)
+        {
+            Stimulacije stimulacije = new Stimulacije();
+            int destimulacija;
+            destimulacija = stimulacije.VratiDestimulaciju(kod);
+                      
+            var postojiOperator = context.OPERATORS.Where(o => o.OpCode == kod).FirstOrDefault();
+
+            //kreiramo novu destimulaciju popunimo godinu/mjesec/operatora/status - ostalo za dodavanje
+            DateTime oneMonthAgo = DateTime.Now.AddMonths(-1);
+            int mjesecPrije = oneMonthAgo.Month;
+            int godinaPrije = oneMonthAgo.Year;
+
+            var data = context.StimulacijaPL.Where(x => (x.@operator == kod) && (x.godina == godinaPrije) && (x.mjesec == mjesecPrije)).FirstOrDefault();
+
+
+            //Ovo treba posložiti
+
+            if (data == null && postojiOperator != null)
+            {
+                var podatak = new StimulacijaPL()
+                {
+                    mjesec = mjesecPrije,
+                    godina = godinaPrije,
+                    @operator = kod,
+                    ime = postojiOperator.FirstName,
+                    prezime = postojiOperator.LastName,
+                    PostotakDestim = destimulacija,
+                    status = "2"
+                };
+                context.StimulacijaPL.Add(podatak);
+                context.SaveChanges();
+
+                return Json(new { success = true, url = Url.Action("Edit", new {operator1 = podatak.@operator, godina = podatak.godina, mjesec = podatak.mjesec }) }, JsonRequestBehavior.AllowGet);
+            }
+            else if (data == null && postojiOperator == null)
+            {               
+                return Json(new { success = false, error = "Ne postoji takav operator!" }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {               
+                return Json(new { success = false, error = "Operator već postoji u stimulacijama!" }, JsonRequestBehavior.AllowGet);
+            }
+           
+        }
+
 
         public ActionResult Logout()
         {
@@ -233,8 +286,7 @@ namespace Stimulacije_2022.Controllers
 
             return RedirectToAction("Login");
         }
-
-        
+               
 
     }
 }

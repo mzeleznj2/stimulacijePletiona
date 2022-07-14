@@ -205,6 +205,34 @@ namespace Stimulacije_2022.Models
 
             return podaciBolovanja;
         }
+
+
+        public int VratiDestimulaciju(int Badge)
+        {
+            // DataTable dtZucchetti = new DataTable();
+            int destimulacija = 0; ;
+            using (conn = new SqlConnection(connStringZuccheti))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("select PostoDestim from OduzimanjeBolovanja where BADGE IN ('" + Badge + "')", conn);
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    destimulacija = Convert.ToInt32(reader["PostoDestim"]);
+                }
+                else
+                {
+                    destimulacija = 0;
+                }
+
+
+                return destimulacija;
+            }
+
+            
+
+        }
         
     } 
 
