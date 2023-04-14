@@ -29,12 +29,17 @@ namespace Stimulacije_2022.Models
 
                 var today = DateTime.Today;
                 var month = new DateTime(today.Year, today.Month, 1);
-                var first = month.AddMonths(-1).ToString("yyyy-MM-dd hh:mm:ss");
-                var last = month.AddDays(-1).ToString("yyyy-MM-dd hh:mm:ss");
+                var first = month.AddMonths(-1).ToString("yyyy-MM-dd 00:00:00");
+                var last = month.AddDays(-1).ToString("yyyy-MM-dd 00:00:00");
 
                 conn.Open();
+
+                //OLD
+                //SqlCommand cmd = new SqlCommand("SELECT * " +
+                //                                "FROM TublaEffFinal({ ts '" + first + "' }, { ts '" + last + "'}) where Operator1 not in (1,2)", conn);
+
                 SqlCommand cmd = new SqlCommand("SELECT * " +
-                                                "FROM TublaEffFinal({ ts '" + first + "' }, { ts '" + last + "'}) where Operator1 not in (1,2)", conn);
+                                                "FROM TublaEffFinal_20221001({ ts '" + first + "' }, { ts '" + last + "'}) where Operator1 not in (1,2)", conn);
                 cmd.CommandTimeout = 120;
                 SqlDataAdapter adapter1 = new SqlDataAdapter(cmd);
                 adapter1.Fill(dtTublaEffFinal);
@@ -54,7 +59,7 @@ namespace Stimulacije_2022.Models
 
             foreach (DataRow pod in dtTublaEffFinal.Rows)
             {
-
+                
                 Zdruzeno podatak = new Zdruzeno();
                 podatak.Operator1 = Convert.ToInt32(pod["Operator1"]);
                 podatak.FirstName = pod["FirstName"].ToString();
@@ -85,14 +90,16 @@ namespace Stimulacije_2022.Models
                 }
 
                 podatak.PostoDestim = (from DataRow r in dtZucchetti.Rows
-                                       where r.Field<int>("BADGE") == Convert.ToInt32(pod["Operator1"])
-                                       select r.Field<int>("PostoDestim")).FirstOrDefault();
+                                        where r.Field<int>("BADGE") == Convert.ToInt32(pod["Operator1"])
+                                        select r.Field<int>("PostoDestim")).FirstOrDefault();
 
 
                 podatak.Ukupno = podatak.Stimulacija - podatak.PostoDestim;
 
 
                 sviPodaci.Add(podatak);
+                
+                              
             }
 
             //kopiranje           
@@ -103,7 +110,7 @@ namespace Stimulacije_2022.Models
 
                 int mjesecPrije = oneMonthAgo.Month;
                 int godinaPrije = oneMonthAgo.Year;
-                int ukupno = sviPodaci.Count();
+                //int ukupno = sviPodaci.Count();
 
 
                 using (var context = new dbNautilusEntities4())
@@ -125,7 +132,8 @@ namespace Stimulacije_2022.Models
                             Norma = Math.Round(pod.Norma, 2),
                             PostotakDestim = Convert.ToInt32(pod.PostoDestim),
                             Stimulacija = Convert.ToInt32(pod.Stimulacija),
-                            Ukupno = Convert.ToInt32(pod.Ukupno),
+                            //Ukupno = Convert.ToInt32(pod.Ukupno),
+                            Ukupno = Convert.ToInt32(pod.Stimulacija - pod.PostoDestim),
                             status = "1"
                         };
 
@@ -134,7 +142,9 @@ namespace Stimulacije_2022.Models
                     }
                     else
                     {
-                        var podatakZaUpdate = context.StimulacijaPL.First(c => c.@operator == pod.Operator1);
+                        //var podatakZaUpdate = context.StimulacijaPL.First(c => c.@operator == pod.Operator1);
+                        var podatakZaUpdate = context.StimulacijaPL.OrderByDescending(c => c.@operator == pod.Operator1 && c.mjesec == mjesecPrije).FirstOrDefault();
+
                         podatakZaUpdate.Efikasnost = Math.Round(pod.Efikasnost, 2);
                         podatakZaUpdate.EfPremaNormi = Math.Round(pod.EfPremaNormi, 2);
                         podatakZaUpdate.Norma = Math.Round(pod.Norma, 2);

@@ -68,9 +68,13 @@ namespace Stimulacije_2022.Controllers
 
         public ActionResult StimulacijeZaObradu()
         {
+            DateTime oneMonthAgo = DateTime.Now.AddMonths(-1);
+            int mjesecPrije = oneMonthAgo.Month;
+            int godinaPrije = oneMonthAgo.Year;
+
             if (Session["User"] != null)
             {
-                return View(context.StimulacijaPL.ToList());
+                return View(context.StimulacijaPL.Where(a => a.mjesec == mjesecPrije).ToList());
             }
             else 
             {
@@ -98,9 +102,10 @@ namespace Stimulacije_2022.Controllers
             {
 
                 foreach (var stim in traziStimulacije)
-                {
+                {                    
                     stim.status = "2";
-                }
+                }                
+
                 context.SaveChanges();
 
 
@@ -139,32 +144,47 @@ namespace Stimulacije_2022.Controllers
         [HttpPost]
         public ActionResult Edit(StimulacijaPL stimulacijeEdit)
         {
+            int operator2, godina2, mjesec2;
+
             if (ModelState.IsValid) {
                 using (var context = new dbNautilusEntities4())
                 {
                     var data = context.StimulacijaPL.Where(x => x.idStimulacije == stimulacijeEdit.idStimulacije).FirstOrDefault();
 
-                    if (data != null)
+                     operator2 = Convert.ToInt32(data.@operator);
+                     godina2 = Convert.ToInt32(data.godina);
+                     mjesec2 = Convert.ToInt32(data.mjesec);
+
+
+                    if (data != null && (stimulacijeEdit.Efikasnost != 0 && stimulacijeEdit.EfPremaNormi != 0) && data.Stimulacija > 0)
                     {
-                        data.Efikasnost = stimulacijeEdit.Efikasnost;
-                        data.EfPremaNormi = stimulacijeEdit.EfPremaNormi;
-                        data.Norma = stimulacijeEdit.Norma;
-                        data.PostotakDestim = stimulacijeEdit.PostotakDestim;
-                        data.Stimulacija = stimulacijeEdit.Stimulacija;
-                        data.Ukupno = stimulacijeEdit.Ukupno;
+                        data.Efikasnost = stimulacijeEdit.Efikasnost is null ? 0 : stimulacijeEdit.Efikasnost;
+                        data.EfPremaNormi = stimulacijeEdit.EfPremaNormi is null ? 0 : stimulacijeEdit.EfPremaNormi;
+                        data.Norma = stimulacijeEdit.Norma is null ? 0 : stimulacijeEdit.Norma;
+                        data.PostotakDestim = stimulacijeEdit.PostotakDestim is null ? 0 : stimulacijeEdit.PostotakDestim;
+                        data.Stimulacija = stimulacijeEdit.Stimulacija is null ? 0 : stimulacijeEdit.Stimulacija;
+                        data.Ukupno = stimulacijeEdit.Stimulacija - stimulacijeEdit.PostotakDestim;
                         data.status = stimulacijeEdit.status;
 
+                        context.SaveChanges();
+
+                        TempData["uspjeh"] = "Uspješno ste ažurirali operatora " + data.@operator;
+
+                        return RedirectToAction("StimulacijeZaObradu");
+
                     }
-                    context.SaveChanges();
+                    else
+                    {
+                        TempData["nule"] = "Efikasnost i/ili efikasnost prema normi mora imati vrijednost veću od 0!";
+                        return RedirectToAction ("Edit", new { operator1 = operator2, godina = godina2, mjesec = mjesec2 });
 
-                    TempData["uspjeh"] = "Uspješno ste ažurirali operatora " + data.@operator;
+                    }
+                    
                 }
-
-                return RedirectToAction("StimulacijeZaObradu");
+                
             }
-
+            
             return View(stimulacijeEdit);
-           
         }
 
         public ActionResult TraziBolovanja()
@@ -245,10 +265,7 @@ namespace Stimulacije_2022.Controllers
             int mjesecPrije = oneMonthAgo.Month;
             int godinaPrije = oneMonthAgo.Year;
 
-            var data = context.StimulacijaPL.Where(x => (x.@operator == kod) && (x.godina == godinaPrije) && (x.mjesec == mjesecPrije)).FirstOrDefault();
-
-
-            //Ovo treba posložiti
+            var data = context.StimulacijaPL.Where(x => (x.@operator == kod) && (x.godina == godinaPrije) && (x.mjesec == mjesecPrije)).FirstOrDefault();          
 
             if (data == null && postojiOperator != null)
             {

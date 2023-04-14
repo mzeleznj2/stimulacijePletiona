@@ -6,22 +6,6 @@
 <head>
     <meta name="viewport" content="width=device-width" />
 
-    @*<script src="~/scripts/jquery-3.4.1.js"></script>
-        <script src="~/Scripts/jquery-3.4.1.min.js"></script>
-        <script src="~/Scripts/bootstrap.min.js"></script>
-
-
-        <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
-        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" />
-        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css" />
-
-
-        <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-        <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>*@
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
@@ -40,6 +24,7 @@
     <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 
+ 
 
     <style>
         .table {
@@ -62,14 +47,7 @@
             color: white;
             margin: 5px;
             border: 1px solid black;
-        }
-
-        .tri {
-            background-color: gold;
-            color: black;
-            margin: 5px;
-            border: 1px solid black;
-        }
+        }    
 
         .devet {
             background-color: grey;
@@ -86,8 +64,6 @@
         #spnMsg {
             margin-top: 5px;
         }
-
-
     </style>
 
 
@@ -95,27 +71,22 @@
         function ProvjeriCodice() {
 
             var kod = document.getElementById("codice").value;
-            console.log(kod);
-            var operator = {};
-            operator.codice = kod;
-            operator.prezIme = "";
-
+            /* console.log(kod);*/
 
             $.ajax({
                 type: "GET",
-                url: '/Home/ProvjeriKod',            
-                data: {"kod" : kod},
-                contentType: "application/json; charset=utf-8",        
+                url: '/Home/ProvjeriKod',
+                data: { "kod": kod },
+                contentType: "application/json; charset=utf-8",
                 success: function (response) {
                     if (response.success) {
-                        $('#exampleModal').modal('hide');                        
+                        $('#exampleModal').modal('hide');
                         location.href = response.url;
                     }
                     else {
                         /*console.log("ne postoji operator!");*/
                         $("#spnMsg").html(response.error);
                         $("#spnMsg").addClass("alert alert-danger");
-                        //$("#btnRegister").prop('disabled', true);
                     }
                 }
             });
@@ -195,11 +166,9 @@
 
 
     <div id="status">
-        Status: <span class="jedan"> "1" = Kopirano </span> <span class="dva"> "2" = Potvrđeno za prebacivanje </span><span class="tri"> "3"= Prebačeno u plaću </span><span class="devet">  "9" = Preskače se iz obrada </span>
+        Status: <span class="jedan"> "1" = Kopirano </span> <span class="dva"> "2" = Potvrđeno za prebacivanje </span><span class="devet">  "9" = Preskače se iz obrada </span>
     </div>
     <br />
-
-
 
 
     <table id="table" class="table table-bordered table-hover" border="1">
@@ -291,13 +260,7 @@
                     else if (item.status == "2")
                     {
                         <td>
-                            <button class="dva" disabled>@Html.DisplayFor(modelItem => item.status) </button>
-                        </td>
-                    }
-                    else if (item.status == "3")
-                    {
-                        <td>
-                            <button class="tri" disabled> @Html.DisplayFor(modelItem => item.status)  </button>
+                            <button class="dva" disbled>@Html.DisplayFor(modelItem => item.status) </button>
                         </td>
                     }
                     else
@@ -306,23 +269,24 @@
                             <button class="devet" disabled> @Html.DisplayFor(modelItem => item.status)  </button>
                         </td>
                     }
+                }                
+            <td>
+                @{
+                    if (item.status == "9")
+                    {
+                        <button class="btn btn-warning" disabled>
+                            <i class="fa fa-pencil-square"></i> Ažuriraj
+                        </button>
+                    }
+                    else
+                    { 
+                        <button class="btn btn-warning" onclick="location.href='@Url.Action("Edit", "Home", new { operator1 = item.@operator, godina = item.godina, mjesec = item.mjesec })'">
+                            <i class="fa fa-pencil-square"></i> Ažuriraj
+                        </button>
+                    }
+                 }
 
-                }
-                @*<td>
-                        <span class= ""> @Html.DisplayFor(modelItem => item.status) </span>
-                    </td>*@
-                <td>
-
-                    @*@Html.ActionLink("Edit", "Edit", new { operator1 = item.@operator, godina = item.godina, mjesec = item.mjesec }, new { @class = "btn btn-success" })*@
-                    @*<a href="@Url.Action("Edit", "Home", new { operator1 = item.@operator, godina = item.godina, mjesec = item.mjesec })" class="btn btn-success">
-                            <i class="bi bi-pencil-square"></i>  Ažuriraj
-                        </a>*@
-
-
-                    <button class="btn btn-warning" onclick="location.href='@Url.Action("Edit", "Home", new { operator1 = item.@operator, godina = item.godina, mjesec = item.mjesec })'">
-                        <i class="fa fa-pencil-square"></i> Ažuriraj
-                    </button>
-                </td>
+            </td>
             </tr>
 
         }
@@ -331,22 +295,19 @@
 
 
 
-
     <script>
         $(document).ready(function () {
             var table = $('#table').DataTable({
 
-                /*dom: 'Bfrtip',*/
-                //buttons: [
-                //    "excel",
-                //    "pdf"
-                //]
+                dom: 'Bfrtip',
+                buttons: [
+                    "copy",                   
+                ]
                 //buttons: [
                 //    'excelHtml5',
                 //    'pdfHtml5'
                 //],
             });
-
 
 
         });
